@@ -1,12 +1,8 @@
 name: Weekly Discord Message
-
 on:
   schedule:
-    # 매주 토요일 오후 1시 발송 (UTC 기준, 한국 시간은 13:00)
-    # cron: '분 시 일 토 요일'
     - cron: '0 4 * * 6'
-  workflow_dispatch: # 수동 실행 버튼 활성화
-
+  workflow_dispatch:
 jobs:
   send_message:
     runs-on: ubuntu-latest
@@ -14,16 +10,12 @@ jobs:
       - name: Get Current Date and Day
         id: date
         run: |
-          # 한국 시간(KST) 기준으로 실행일(토요일)로부터 '다음 수요일' 계산
-          # 'next wednesday' 옵션을 사용하면 가장 가까운 미래의 수요일을 가져옵니다.
           TARGET_DATE=$(TZ='Asia/Seoul' date -d "next wednesday" +'%Y-%m-%d')
+          echo "formatted_date=${TARGET_DATE} 수" >> $GITHUB_OUTPUT
           
-          # 환경 변수에 저장 (수요일이므로 요일은 '수'로 고정)
-          echo "formatted_date=${TARGET_DATE} 수" >> $GITHUB_ENV
-
       - name: Create Forum Thread
         env:
-          FORMATTED_DATE: ${{ env.formatted_date }}
+          FORMATTED_DATE: ${{ steps.date.outputs.formatted_date }}
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
           PAYLOAD=$(cat <<EOF
