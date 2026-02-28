@@ -7,12 +7,6 @@ jobs:
   send_message:
     runs-on: ubuntu-latest
     steps:
-      - name: Get Current Date and Day
-        id: date
-        run: |
-          TARGET_DATE=$(TZ='Asia/Seoul' date -d "next wednesday" +'%Y-%m-%d')
-          echo "formatted_date=${TARGET_DATE} 수" >> $GITHUB_OUTPUT
-          
       - name: Create Forum Thread
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
