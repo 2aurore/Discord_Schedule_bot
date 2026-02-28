@@ -15,10 +15,13 @@ jobs:
           
       - name: Create Forum Thread
         env:
-          FORMATTED_DATE: ${{ steps.date.outputs.formatted_date }}
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
         run: |
-          TAG_SCHEDULE:"1475832651280551977"
+          TARGET_DATE=$(TZ='Asia/Seoul' date -d "next wednesday" +'%Y-%m-%d')
+          FORMATTED_DATE="${TARGET_DATE} 수"
+          
+          # 변수 선언 (= 사용, : 제거)
+          TAG_SCHEDULE="1475832651280551977"
           
           PAYLOAD=$(cat <<EOF
           {
@@ -28,6 +31,7 @@ jobs:
           }
           EOF
           )
+          
           curl -X POST "${WEBHOOK_URL}?wait=true" \
             -H "Content-Type: application/json" \
             -d "${PAYLOAD}"
